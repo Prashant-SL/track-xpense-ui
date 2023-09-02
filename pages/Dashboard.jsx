@@ -33,8 +33,8 @@ const Dashboard = () => {
       `${URLHelpers.backendURL}/transactions/get-balance`,
       headers
     );
-    const { balance, lastIncome, lastExpense } = data;
-    return { balance, lastIncome, lastExpense };
+    const { balance, totalIncome, totalExpense } = data;
+    return { balance, totalIncome, totalExpense };
   };
 
   const { data: availableBalance } = useQuery("availableBalance", fetchBalance);
@@ -52,12 +52,12 @@ const Dashboard = () => {
         <div className="flex gap-4 my-4 justify-center">
           <TransactionButton
             pageName="Home"
-            lastTrasaction={availableBalance?.lastIncome}
+            lastTrasaction={availableBalance?.totalIncome}
             transactionData={{ type: "income" }}
           />
           <TransactionButton
             pageName="Home"
-            lastTrasaction={availableBalance?.lastExpense}
+            lastTrasaction={availableBalance?.totalExpense}
             transactionData={{ type: "expense" }}
           />
         </div>
