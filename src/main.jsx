@@ -16,8 +16,9 @@ const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <>
-    <div className="w-max h-max overflow-scroll no-scrollbar scroll-smooth border mx-auto">
+    <div className="w-max overflow-scroll no-scrollbar scroll-smooth border mx-auto">
       <QueryClientProvider client={queryClient}>
+        {/* Header */}
         <Header />
         <Router>
           <Routes>
