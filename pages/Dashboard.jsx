@@ -1,5 +1,4 @@
 import { useQuery } from "react-query";
-import { useEffect } from "react";
 import TransactionButton from "../src/components/transaction/TransactionButton";
 import TransactionList from "../src/components/transaction/TransactionList";
 import Skeleton from "../src/components/Skeleton";
@@ -9,10 +8,6 @@ import { Link } from "react-router-dom";
 import { NoContentSVG } from "../src/svg/index.js";
 
 const Dashboard = () => {
-  useEffect(() => {
-    if (!localStorage.getItem("token")) window.location.href = "/login";
-  });
-
   const headers = {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -100,7 +95,7 @@ const Dashboard = () => {
               />
             ))
           : transactionsList
-              .slice(0, 4)
+              ?.slice(0, 4)
               ?.map((transactionList) => (
                 <TransactionList
                   transactionData={transactionList}
