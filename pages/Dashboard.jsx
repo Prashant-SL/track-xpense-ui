@@ -5,9 +5,18 @@ import Skeleton from "../src/components/Skeleton";
 import * as URLHelpers from "../src/helpers/URLHelpers";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { NoContentSVG } from "../src/svg/index.js";
+import NoContent from "../src/components/NoContent";
+import { useEffect } from "react";
 
 const Dashboard = () => {
+  const isLoggedIn = localStorage.getItem("token") ? true : false;
+  useEffect(() => {
+    setTimeout(() => {
+      if (!isLoggedIn) {
+        window.location.href("/login");
+      }
+    }, 5000);
+  }, [isLoggedIn]);
   const headers = {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -25,7 +34,7 @@ const Dashboard = () => {
 
   const { isLoading, data: transactionsList } = useQuery(
     "transactions",
-    fetchTransactions
+    isLoggedIn && fetchTransactions
   );
 
   const fetchBalance = async () => {
@@ -37,12 +46,15 @@ const Dashboard = () => {
     return { balance, totalIncome, totalExpense };
   };
 
-  const { data: availableBalance } = useQuery("availableBalance", fetchBalance);
+  const { data: availableBalance } = useQuery(
+    "availableBalance",
+    isLoggedIn && fetchBalance
+  );
 
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
-    <div className="mx-auto lg:mb-10 relative w-max text-center h-max">
+    <div className="mx-auto lg:mb-12 relative w-max text-center h-max">
       {isLoading}
       <div className="shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-35px] bg-gradient-to-b from-transparent to-purple-50 sticky z-0 pb-6 rounded-3xl">
         <div className="mt-4 leading-[50px]">
@@ -52,12 +64,12 @@ const Dashboard = () => {
         <div className="flex gap-4 my-4 justify-center">
           <TransactionButton
             pageName="Home"
-            lastTrasaction={availableBalance?.totalIncome}
+            lastTrasaction={availableBalance?.lastIncome}
             transactionData={{ type: "income" }}
           />
           <TransactionButton
             pageName="Home"
-            lastTrasaction={availableBalance?.totalExpense}
+            lastTrasaction={availableBalance?.lastExpense}
             transactionData={{ type: "expense" }}
           />
         </div>
@@ -76,14 +88,7 @@ const Dashboard = () => {
             </Link>
           </div>
         ) : (
-          <>
-            <img src={NoContentSVG} />
-            <p className="px-6 text-gray-400 text-lg">
-              You have not made any transactions.
-              <br />
-              Please make new transactions.
-            </p>
-          </>
+          <NoContent />
         )}
         {isLoading && <Skeleton />}
 
